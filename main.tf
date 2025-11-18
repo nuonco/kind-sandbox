@@ -12,7 +12,7 @@ locals {
 # Create the Kind cluster
 resource "kind_cluster" "this" {
   name            = local.cluster_name
-  kubeconfig_path = pathexpand("~/.kube/config-${local.cluster_name}")
+  kubeconfig_path = pathexpand("~/.kube/config")
   wait_for_ready  = true
 
   kind_config {
