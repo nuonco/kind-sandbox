@@ -6,6 +6,10 @@ terraform {
       source  = "tehcyx/kind"
       version = "~> 0.6.0"
     }
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "~> 3.0"
+    }
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "~> 2.35.1"

@@ -7,6 +7,9 @@ locals {
     [var.nuon_id],
     var.additional_namespaces
   )
+
+  # Fix endpoint URL to use 127.0.0.1 instead of 0.0.0.0 for certificate validation
+  cluster_endpoint = replace(kind_cluster.this.endpoint, "https://0.0.0.0:", "https://127.0.0.1:")
 }
 
 # Create the Kind cluster
@@ -19,20 +22,21 @@ resource "kind_cluster" "this" {
     kind        = "Cluster"
     api_version = "kind.x-k8s.io/v1alpha4"
 
+    containerd_config_patches = var.install_registry ? [
+      <<-EOT
+      [plugins."io.containerd.grpc.v1.cri".registry]
+        config_path = "/etc/containerd/certs.d"
+      EOT
+    ] : []
+
     node {
       role  = "control-plane"
       image = "kindest/node:v${var.cluster_version}"
 
-      # Port mappings for ingress
+      # Port mapping for Kubernetes API server
       extra_port_mappings {
-        container_port = 80
-        host_port      = var.ingress_http_port
-        protocol       = "TCP"
-      }
-
-      extra_port_mappings {
-        container_port = 443
-        host_port      = var.ingress_https_port
+        container_port = 6443
+        host_port      = var.control_plane_port
         protocol       = "TCP"
       }
 

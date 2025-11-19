@@ -40,6 +40,12 @@ variable "control_plane_nodes" {
 }
 
 # Port Mappings
+variable "control_plane_port" {
+  description = "Host port to map to the Kubernetes API server (6443). Set to 0 for random port assignment to support multiple clusters."
+  type        = number
+  default     = 6443
+}
+
 variable "ingress_http_port" {
   description = "Host port to map to container port 80 for HTTP ingress"
   type        = number
@@ -63,6 +69,18 @@ variable "install_ingress_nginx" {
   description = "Whether to install ingress-nginx controller in the cluster"
   type        = bool
   default     = true
+}
+
+variable "install_registry" {
+  description = "Whether to install a local container registry"
+  type        = bool
+  default     = true
+}
+
+variable "registry_port" {
+  description = "Host port for the local container registry"
+  type        = number
+  default     = 6001
 }
 
 # Namespaces

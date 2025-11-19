@@ -21,10 +21,10 @@ output "namespaces" {
 output "ingress" {
   description = "Ingress controller configuration"
   value = {
-    enabled   = var.install_ingress_nginx
-    http_port = var.ingress_http_port
+    enabled    = var.install_ingress_nginx
+    http_port  = var.ingress_http_port
     https_port = var.ingress_https_port
-    endpoint  = var.install_ingress_nginx ? "http://localhost:${var.ingress_http_port}" : ""
+    endpoint   = var.install_ingress_nginx ? "http://localhost:${var.ingress_http_port}" : ""
   }
 }
 
@@ -41,7 +41,26 @@ output "nuon_id" {
   value       = var.nuon_id
 }
 
+output "cluster_type" {
+  description = "The Nuon installation identifier"
+  value       = "kind"
+}
+
 output "tags" {
   description = "Tags applied to resources"
   value       = local.all_tags
+}
+
+output "registry" {
+  description = "Container registry information"
+  value = {
+    enabled       = var.install_registry
+    registry_url  = local.registry_url
+    registry_endpoint = local.registry_endpoint
+    registry_port = var.registry_port
+    # For local registry, no authentication is required by default
+    auth_required = false
+    # Instructions for pushing images
+    usage = var.install_registry ? "docker tag <image> ${local.registry_url}/<image>:<tag> && docker push ${local.registry_url}/<image>:<tag>" : ""
+  }
 }
